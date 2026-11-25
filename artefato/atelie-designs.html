@@ -1,0 +1,541 @@
+<title>Ateliê de Designs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: estúdio em duas colunas — bancada de criação à esquerda, mesa de trabalho do design à direita; empilha no celular. */
+:root{
+  --paper:#F5F4F8; --surface:#FFFFFF; --ink:#18161F; --muted:#615C6E; --line:#DEDBE6;
+  --accent:#5537C8; --accent-ink:#FFFFFF; --accent-soft:#ECE8FB;
+  --good:#1D7A4E; --warn:#A86200; --bad:#B3261E;
+  --display:"Fraunces", Georgia, "Times New Roman", serif;
+  --body:"Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#121118; --surface:#1B1A23; --ink:#EEECF4; --muted:#A39FB0; --line:#2E2C39;
+  --accent:#A08CF5; --accent-ink:#14121C; --accent-soft:#272240;
+  --good:#5CC994; --warn:#E8A94A; --bad:#F08A80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#121118; --surface:#1B1A23; --ink:#EEECF4; --muted:#A39FB0; --line:#2E2C39;
+  --accent:#A08CF5; --accent-ink:#14121C; --accent-soft:#272240;
+  --good:#5CC994; --warn:#E8A94A; --bad:#F08A80; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.05;margin:0;letter-spacing:-.01em}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{color:var(--muted);margin:4px 0 0;max-width:60ch}
+h2{font-family:var(--display);font-weight:600;font-size:22px;margin:0;text-wrap:balance}
+h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0;font-weight:700}
+.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+.tab{border:0;background:transparent;color:var(--muted);font:600 14px var(--body);padding:8px 16px;border-radius:999px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.field{display:flex;flex-direction:column;gap:8px}
+label.lbl{font-weight:700;font-size:14px}
+.hint{color:var(--muted);font-size:13px}
+textarea,input[type=text],input[type=search],select{width:100%;font:15px var(--body);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:84px;resize:vertical}
+textarea:focus,input:focus,select:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:inline-flex;flex-direction:column;border:1px solid var(--line);background:var(--paper);border-radius:10px;padding:8px 12px;font-size:14px;font-weight:600}
+.chip span small{font-weight:500;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.chip input:checked + span{border-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.chip input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:700 14px var(--body);padding:10px 16px;border-radius:10px;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.status{font-size:14px;color:var(--muted);display:flex;gap:10px;align-items:flex-start}
+.status.err{color:var(--bad)}
+.status.ok{color:var(--good)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:sp 0.9s linear infinite;flex:none;margin-top:2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.steps li{display:flex;gap:8px;color:var(--muted)}
+.steps li::before{content:"○";width:1em;color:var(--line)}
+.steps li.on{color:var(--ink)} .steps li.on::before{content:"●";color:var(--accent)}
+.steps li.done::before{content:"✓";color:var(--good)}
+
+/* mesa de trabalho */
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:28px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:6px;align-items:center}
+.empty strong{font-family:var(--display);font-size:20px;color:var(--ink);font-weight:600}
+.previews{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.previews figure{margin:0;flex:none;width:min(100%,300px);display:flex;flex-direction:column;gap:4px}
+.previews img{width:100%;border-radius:8px;border:1px solid var(--line);background:var(--paper);display:block}
+.previews figcaption{font-size:12px;color:var(--muted)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.sev-Alta{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.sev-Média{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.sev-Baixa{background:var(--accent-soft);color:var(--accent)}
+.fb{display:flex;flex-direction:column;gap:12px}
+.fb ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.fb ul{margin:0;padding-left:20px}
+.fb .fix{color:var(--muted);font-size:14px}
+.sect{border-top:1px solid var(--line);padding-top:16px;display:flex;flex-direction:column;gap:12px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.list li:last-child{border-bottom:0}
+.list .t{font-weight:700;min-width:0;overflow-wrap:anywhere}
+.list .d{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:700px){.how{grid-template-columns:minmax(0,1fr)}}
+.how div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.how b{font-family:var(--display);font-weight:600;font-size:17px}
+.how p{margin:0;color:var(--muted);font-size:14px}
+.banner{background:var(--accent-soft);border-radius:var(--r);padding:12px 16px;font-size:14px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Ateliê de <em>Designs</em></h1>
+      <p class="sub">Crie posts, peça uma análise e adapte para cada rede, direto na sua conta da Canva.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Seções">
+      <button class="tab" role="tab" id="tab-criar" aria-selected="true" aria-controls="view-criar">Criar</button>
+      <button class="tab" role="tab" id="tab-meus" aria-selected="false" aria-controls="view-meus">Meus designs</button>
+    </div>
+  </header>
+
+  <div id="unavailable" class="banner" hidden>Esta página precisa ser aberta no claude.ai, com o conector da Canva conectado, para criar e ler designs.</div>
+
+  <div class="grid">
+    <!-- ESQUERDA: Criar -->
+    <section class="panel" id="view-criar" role="tabpanel" aria-labelledby="tab-criar">
+      <h2>Novo design</h2>
+      <form id="form-criar" class="fb" novalidate>
+        <div class="field">
+          <span class="lbl">Formato</span>
+          <div class="chips" id="formatos">
+            <label class="chip"><input type="radio" name="formato" value="feed" checked><span>Post do feed<small>1080 × 1080</small></span></label>
+            <label class="chip"><input type="radio" name="formato" value="story"><span>Story<small>1080 × 1920</small></span></label>
+            <label class="chip"><input type="radio" name="formato" value="carrossel"><span>Carrossel<small>vários slides</small></span></label>
+            <label class="chip"><input type="radio" name="formato" value="flyer"><span>Flyer<small>A4 retrato</small></span></label>
+            <label class="chip"><input type="radio" name="formato" value="apresentacao"><span>Apresentação<small>16:9</small></span></label>
+          </div>
+        </div>
+        <div class="field" id="campo-slides" hidden>
+          <label class="lbl" for="slides">Quantos slides?</label>
+          <select id="slides"><option>3</option><option selected>5</option><option>7</option><option>10</option></select>
+        </div>
+        <div class="field">
+          <label class="lbl" for="tema">Sobre o que é?</label>
+          <textarea id="tema" placeholder="Ex.: Convite para o Culto de Natal da igreja"></textarea>
+        </div>
+        <div class="field">
+          <label class="lbl" for="textos">Textos que precisam aparecer</label>
+          <textarea id="textos" placeholder="Ex.: Domingo, 20 de dezembro · 9h e 18h · Venha celebrar conosco"></textarea>
+          <span class="hint">Esses textos entram exatamente como você escreveu. Deixe em branco para o Claude escrever.</span>
+        </div>
+        <div class="field">
+          <span class="lbl">Estilo</span>
+          <div class="chips" id="estilos">
+            <label class="chip"><input type="radio" name="estilo" value="livre" checked><span>Deixa comigo</span></label>
+            <label class="chip"><input type="radio" name="estilo" value="Clássico e elegante: serifas refinadas, detalhes dourados, fundo escuro profundo"><span>Clássico</span></label>
+            <label class="chip"><input type="radio" name="estilo" value="Moderno e limpo: tipografia sem serifa forte, blocos de cor, muito espaço em branco"><span>Moderno</span></label>
+            <label class="chip"><input type="radio" name="estilo" value="Minimalista: poucos elementos, uma cor de destaque, tipografia delicada"><span>Minimalista</span></label>
+            <label class="chip"><input type="radio" name="estilo" value="Vibrante: cores saturadas, contraste alto, tipografia grande e energética"><span>Vibrante</span></label>
+            <label class="chip"><input type="radio" name="estilo" value="Aconchegante: tons quentes, texturas suaves, fotos com luz natural"><span>Aconchegante</span></label>
+          </div>
+          <input type="text" id="estilo-extra" placeholder="Detalhes de cor ou clima (opcional). Ex.: verde e dourado">
+        </div>
+        <div class="field">
+          <label class="lbl" for="kit">Kit de marca</label>
+          <div class="row">
+            <select id="kit" style="flex:1;min-width:0"><option value="">Sem kit de marca</option></select>
+            <button type="button" class="btn" id="btn-kits">Carregar kits</button>
+          </div>
+          <span class="hint">Use as cores, fontes e logo salvos na sua Canva.</span>
+        </div>
+        <div class="row">
+          <button type="submit" class="btn primary" id="btn-criar">Criar na Canva</button>
+        </div>
+        <div id="criar-status" class="status" aria-live="polite"></div>
+        <ol class="steps" id="criar-steps" hidden>
+          <li data-s="1">Enviando o pedido para a Canva</li>
+          <li data-s="2">A Canva está montando o design</li>
+          <li data-s="3">Conferindo a prévia</li>
+        </ol>
+      </form>
+    </section>
+
+    <!-- ESQUERDA (alternativa): Meus designs -->
+    <section class="panel" id="view-meus" role="tabpanel" aria-labelledby="tab-meus" hidden>
+      <h2>Meus designs</h2>
+      <form id="form-busca" class="row" role="search">
+        <input type="search" id="busca" placeholder="Buscar pelo título ou texto" style="flex:1;min-width:0">
+        <button class="btn" type="submit">Buscar</button>
+      </form>
+      <div id="meus-status" class="status" aria-live="polite"></div>
+      <ul class="list" id="meus-lista"></ul>
+      <div class="row"><button class="btn" id="btn-mais" hidden>Carregar mais</button></div>
+    </section>
+
+    <!-- DIREITA: Mesa de trabalho -->
+    <section class="panel" id="mesa" aria-label="Design aberto">
+      <div class="empty" id="mesa-vazia">
+        <strong>Nenhum design aberto</strong>
+        <span>Crie um design ou abra um dos seus. Ele aparece aqui com a prévia, a análise e as versões para cada rede.</span>
+      </div>
+      <div id="mesa-cheia" hidden>
+        <div class="fb">
+          <h3>Design aberto</h3>
+          <h2 id="d-titulo"></h2>
+          <div class="meta" id="d-meta"></div>
+          <div class="previews" id="d-prev"></div>
+          <div class="row">
+            <a class="btn primary" id="d-editar" target="_blank" rel="noopener">Editar na Canva</a>
+            <button class="btn" id="d-recarregar">Atualizar prévia</button>
+          </div>
+          <div id="d-status" class="status" aria-live="polite"></div>
+        </div>
+
+        <div class="sect">
+          <h3>Análise do design</h3>
+          <p class="hint" style="margin:0">Hierarquia, textos, espaçamento, legibilidade e contraste, com a correção de cada ponto. Só lê, não altera nada.</p>
+          <div class="row"><button class="btn" id="btn-feedback">Analisar design</button></div>
+          <div id="fb-status" class="status" aria-live="polite"></div>
+          <div id="fb-out" class="fb"></div>
+        </div>
+
+        <div class="sect">
+          <h3>Versões para redes sociais</h3>
+          <div class="chips" id="canais">
+            <label class="chip"><input type="checkbox" value="1080x1920" checked><span>Stories e Reels<small>1080 × 1920</small></span></label>
+            <label class="chip"><input type="checkbox" value="1080x1350" checked><span>Feed retrato<small>1080 × 1350</small></span></label>
+            <label class="chip"><input type="checkbox" value="1080x1080"><span>Feed quadrado<small>1080 × 1080</small></span></label>
+            <label class="chip"><input type="checkbox" value="1200x627"><span>LinkedIn, X, Facebook link<small>1200 × 627</small></span></label>
+            <label class="chip"><input type="checkbox" value="1000x1500"><span>Pinterest<small>1000 × 1500</small></span></label>
+            <label class="chip"><input type="checkbox" value="1920x1080"><span>YouTube<small>1920 × 1080</small></span></label>
+          </div>
+          <div class="row"><button class="btn" id="btn-resize">Criar versões</button></div>
+          <div id="rs-status" class="status" aria-live="polite"></div>
+          <ul class="list" id="rs-lista"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="how" aria-label="O que o ateliê faz">
+    <div><b>Criar</b><p>Descreva o post e escolha um estilo. O design nasce editável na sua conta da Canva.</p></div>
+    <div><b>Analisar</b><p>O Claude olha a prévia e aponta o que melhorar, do mais importante ao detalhe.</p></div>
+    <div><b>Adaptar</b><p>Gera cópias redimensionadas para Stories, feed, LinkedIn e outras redes. O original fica intacto.</p></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const SERVER = "Canva";
+  const $ = (id) => document.getElementById(id);
+  let mcp = null, sample = null, ready = false;
+  let atual = null; // {id, titulo, paginas, edit, view, previews:[{blob,url,page}], texto}
+
+  // ---------- capacidades ----------
+  const boot = (async () => {
+    try { mcp = await window.claude?.use?.("mcp"); } catch { mcp = null; }
+    try { sample = await window.claude?.use?.("sample"); } catch { sample = null; }
+    ready = true;
+    if (!mcp) $("unavailable").hidden = false;
+  })();
+  async function need() { if (!ready) await boot; if (!mcp) throw { code: "not_granted" }; }
+
+  function erroMcp(e) {
+    const c = e && e.code;
+    switch (c) {
+      case "server_not_connected": return "A Canva não está conectada. Adicione-a em claude.ai → Configurações → Conectores.";
+      case "needs_reauth": return "A conexão com a Canva expirou. Reconecte em claude.ai → Configurações → Conectores.";
+      case "selection_required": return "Você tem mais de uma conexão da Canva. Escolha qual usar no aviso do claude.ai.";
+      case "not_in_manifest": return "Você não permitiu que esta página use a Canva. Libere no menu Permissões do artefato.";
+      case "approval_required": return "Esta ação precisa da sua aprovação. Clique de novo e confirme no aviso.";
+      case "blocked_by_policy": return "Sua organização bloqueou esta ação da Canva.";
+      case "server_unavailable": case "upstream_error": return "A Canva não respondeu agora. Tente de novo em alguns instantes.";
+      case "tool_error": return "A Canva recusou o pedido: " + String(e.message || "").slice(0, 240);
+      case "not_granted": case "capability_disabled": case "capability_removed":
+        return "Esta visualização não consegue usar conectores. Abra o artefato no claude.ai.";
+      default: return "Algo deu errado ao falar com a Canva" + (c ? " (" + c + ")" : "") + ".";
+    }
+  }
+  function erroSample(e) {
+    switch (e && e.code) {
+      case "not_granted": case "sampling_disabled": case "not_declared": case "capability_disabled": case "capability_removed":
+        return "A análise precisa da sua permissão para usar o Claude nesta página.";
+      case "rate_limited": return "Muitos pedidos ao Claude agora. Espere um pouco e tente de novo.";
+      case "session_expired": return "Sua sessão expirou. Entre de novo no claude.ai.";
+      case "images_unavailable": return "Esta visualização não consegue enviar a prévia ao Claude.";
+      case "invalid_json": case "empty_completion": return "A resposta veio incompleta. Clique em Analisar de novo.";
+      case "refused": return "O Claude não conseguiu analisar este design.";
+      default: return "Não foi possível concluir a análise. Tente de novo.";
+    }
+  }
+  function status(el, txt, kind) {
+    el.className = "status" + (kind ? " " + kind : "");
+    el.textContent = "";
+    if (kind === "busy") { const s = document.createElement("span"); s.className = "spin"; el.append(s); }
+    const t = document.createElement("span"); t.textContent = txt || ""; el.append(t);
+  }
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const call = (tool, input) => mcp.callTool(SERVER, tool, input, { cache: false });
+
+  // ---------- abas ----------
+  function aba(qual) {
+    const criar = qual === "criar";
+    $("tab-criar").setAttribute("aria-selected", criar);
+    $("tab-meus").setAttribute("aria-selected", !criar);
+    $("view-criar").hidden = !criar; $("view-meus").hidden = criar;
+    if (!criar && !$("meus-lista").children.length) buscar(false);
+  }
+  $("tab-criar").onclick = () => aba("criar");
+  $("tab-meus").onclick = () => aba("meus");
+
+  // ---------- criar ----------
+  document.querySelectorAll('input[name=formato]').forEach((r) => r.addEventListener("change", () => {
+    $("campo-slides").hidden = valor("formato") !== "carrossel";
+  }));
+  const valor = (n) => (document.querySelector(`input[name=${n}]:checked`) || {}).value;
+
+  $("btn-kits").onclick = async () => {
+    const st = $("criar-status");
+    try {
+      await need(); status(st, "Buscando seus kits de marca…", "busy");
+      const r = await call("list-brand-kits", { limit: 50, user_intent: "[skill:canva-instagram-post] Listar kits de marca para criar um post" });
+      const itens = (r.payload && r.payload.items) || [];
+      const sel = $("kit"); const antes = sel.value;
+      sel.length = 1;
+      itens.forEach((k, i) => { const o = document.createElement("option"); o.value = k.id; o.textContent = (k.name || "").trim() || "Kit sem nome " + (i + 1); sel.append(o); });
+      sel.value = antes;
+      status(st, itens.length ? itens.length + " kit(s) encontrado(s)." : "Nenhum kit de marca na sua conta.", "ok");
+    } catch (e) { status(st, erroMcp(e), "err"); }
+  };
+
+  const FORMATOS = {
+    feed: { nome: "post de Instagram para o feed, quadrado 1080 × 1080", format: "Instagram Post" },
+    story: { nome: "story de Instagram, vertical 1080 × 1920", format: "Instagram Story" },
+    carrossel: { nome: "carrossel de Instagram", format: "Instagram Post" },
+    flyer: { nome: "flyer em A4 retrato", format: null },
+    apresentacao: { nome: "apresentação 16:9", format: "Presentation" },
+  };
+
+  $("form-criar").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const st = $("criar-status"), btn = $("btn-criar");
+    const tema = $("tema").value.trim(), textos = $("textos").value.trim();
+    if (!tema && !textos) { status(st, "Escreva sobre o que é o design ou os textos que precisam aparecer.", "err"); $("tema").focus(); return; }
+    const f = FORMATOS[valor("formato")];
+    const estilo = valor("estilo"), extra = $("estilo-extra").value.trim();
+    let brief = `Criar um ${f.nome}` + (valor("formato") === "carrossel" ? ` com ${$("slides").value} slides, capa forte no primeiro e chamada para ação no último` : "") + ". Todo o texto em português do Brasil.\n";
+    if (tema) brief += `Assunto: ${tema}\n`;
+    if (textos) brief += `Textos que devem aparecer exatamente assim: ${textos}\n`;
+    else brief += "Escreva títulos curtos e uma chamada clara a partir do assunto.\n";
+    brief += estilo === "livre" ? "Estilo: escolha uma direção visual que combine com o assunto, com acabamento profissional.\n" : `Estilo: ${estilo}.\n`;
+    if (extra) brief += `Cores e clima: ${extra}.\n`;
+    brief += "Texto grande e legível no celular, bom contraste, nada cortado nas bordas.";
+    const input = { brief, user_intent: "[skill:canva-instagram-post] Criar design a partir do ateliê: " + (tema || textos).slice(0, 150) };
+    if (f.format) input.format = f.format;
+    if ($("kit").value) input.brand_kit_id = $("kit").value;
+
+    btn.disabled = true; const steps = $("criar-steps"); steps.hidden = false;
+    const passo = (n) => steps.querySelectorAll("li").forEach((li) => { const s = +li.dataset.s; li.className = s < n ? "done" : s === n ? "on" : ""; });
+    try {
+      await need(); passo(1); status(st, "Enviando…", "busy");
+      const r = await call("create-design", input);
+      let p = r.payload || {}; const job = p.job_id; let tok = p.continuation_token;
+      if (!job) throw { code: "tool_error", message: "a Canva não devolveu um trabalho de criação." };
+      passo(2); status(st, "A Canva está criando o design. Isso costuma levar de 20 a 60 segundos.", "busy");
+      let design = p.design, t0 = Date.now();
+      while (!design) {
+        await wait(Math.max(5, (p.polling_policy && p.polling_policy.wait_seconds) || 10) * 1000);
+        if (Date.now() - t0 > 6 * 60 * 1000) throw { code: "tool_error", message: "a criação demorou demais. Confira seus designs na Canva." };
+        const q = await call("get-create-design-async-job", { job_id: job, continuation_token: tok, user_intent: "[skill:canva-instagram-post] Acompanhar a criação do design" });
+        p = q.payload || {}; tok = p.continuation_token || tok;
+        if (p.status === "failed" || p.error) throw { code: "tool_error", message: (p.error && (p.error.message || p.error)) || "a criação falhou." };
+        design = p.design;
+      }
+      passo(3); status(st, "Design criado. Carregando a prévia…", "busy");
+      await abrir(design.id, { edit: design.edit_url || design.url });
+      passo(4); status(st, "Pronto. O design está salvo na sua Canva.", "ok");
+    } catch (e) { status(st, erroMcp(e), "err"); steps.hidden = true; }
+    finally { btn.disabled = false; }
+  });
+
+  // ---------- abrir / prévia ----------
+  function b64Blob(data, type) { const bin = atob(data); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return new Blob([u], { type }); }
+  function imagens(result) { return (result.content || []).filter((c) => c && c.type === "image" && c.data); }
+
+  async function quaseBranca(blob) {
+    try {
+      const bmp = await createImageBitmap(blob); const c = document.createElement("canvas"); c.width = 24; c.height = 24;
+      const x = c.getContext("2d"); x.drawImage(bmp, 0, 0, 24, 24); const d = x.getImageData(0, 0, 24, 24).data;
+      let min = 255; for (let i = 0; i < d.length; i += 4) min = Math.min(min, d[i], d[i + 1], d[i + 2]); return min > 245;
+    } catch { return false; }
+  }
+
+  async function abrir(id, extra = {}) {
+    await need();
+    $("mesa-vazia").hidden = true; $("mesa-cheia").hidden = false;
+    $("fb-out").textContent = ""; status($("fb-status"), ""); $("rs-lista").textContent = ""; status($("rs-status"), "");
+    const st = $("d-status"); status(st, "Lendo o design…", "busy");
+    $("d-titulo").textContent = extra.titulo || "Carregando…"; $("d-meta").textContent = ""; $("d-prev").textContent = "";
+    try {
+      const r = await call("read-design", { design_id: id, filter: { fields: ["design_metadata", "design_content"] }, user_intent: "[skill:canva-design-feedback] Ler o design aberto no ateliê" });
+      const p = r.payload || {}; const m = p.design_metadata || {};
+      atual = { id, titulo: m.title || extra.titulo || "Design sem título", paginas: m.page_count || 1,
+        edit: (m.urls && m.urls.edit_url) || extra.edit || "", texto: typeof p.design_content === "string" ? p.design_content : JSON.stringify(p.design_content || "").slice(0, 6000), previews: [] };
+      $("d-titulo").textContent = atual.titulo;
+      const meta = $("d-meta"); meta.textContent = "";
+      [atual.paginas + (atual.paginas === 1 ? " página" : " páginas"), m.updated_at ? "Atualizado em " + new Date(m.updated_at * 1000).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : ""]
+        .filter(Boolean).forEach((s) => { const sp = document.createElement("span"); sp.textContent = s; meta.append(sp); });
+      const a = $("d-editar"); if (/^https:\/\//.test(atual.edit)) { a.href = atual.edit; a.hidden = false; } else a.hidden = true;
+      await previa();
+    } catch (e) { status(st, erroMcp(e), "err"); }
+  }
+
+  async function previa() {
+    if (!atual) return; const st = $("d-status"); status(st, "Carregando a prévia…", "busy");
+    try {
+      const pags = Array.from({ length: Math.min(atual.paginas, 10) }, (_, i) => i + 1);
+      const r = await call("read-design", { design_id: atual.id, filter: { fields: ["thumbnails"], thumbnail_pages: pags }, user_intent: "[skill:canva-design-feedback] Ver a prévia do design" });
+      atual.previews.forEach((p) => URL.revokeObjectURL(p.url)); atual.previews = [];
+      const box = $("d-prev"); box.textContent = "";
+      let branca = false;
+      for (const [i, img] of imagens(r).entries()) {
+        const blob = b64Blob(img.data, img.mimeType || "image/png"); const url = URL.createObjectURL(blob);
+        if (await quaseBranca(blob)) branca = true;
+        atual.previews.push({ blob, url, page: pags[i] || i + 1 });
+        const fig = document.createElement("figure"); const im = document.createElement("img"); im.src = url; im.alt = "Prévia da página " + (pags[i] || i + 1);
+        const cap = document.createElement("figcaption"); cap.textContent = "Página " + (pags[i] || i + 1); fig.append(im, cap); box.append(fig);
+      }
+      if (!atual.previews.length) status(st, "A Canva não enviou prévia. Abra o design na Canva para ver.", "");
+      else if (branca) status(st, "A prévia ainda está sendo gerada pela Canva. Clique em Atualizar prévia em alguns segundos.", "");
+      else status(st, "");
+    } catch (e) { status(st, erroMcp(e), "err"); }
+  }
+  $("d-recarregar").onclick = previa;
+
+  // ---------- análise (canva-design-feedback) ----------
+  $("btn-feedback").onclick = async () => {
+    const st = $("fb-status"), out = $("fb-out"), btn = $("btn-feedback");
+    if (!atual) return;
+    if (!ready) await boot;
+    if (!sample) { status(st, "A análise precisa do Claude, que não está disponível nesta visualização.", "err"); return; }
+    btn.disabled = true; out.textContent = ""; status(st, "O Claude está olhando o design…", "busy");
+    try {
+      let imgs = [];
+      const lim = await sample.limits().catch(() => null);
+      if (lim && lim.images) imgs = atual.previews.slice(0, lim.images.maxCount || 1).map((p) => p.blob);
+      const prompt = `Você é um revisor de design. Analise este design da Canva e devolva feedback concreto e priorizado, em português do Brasil.
+Título: ${atual.titulo}
+Páginas: ${atual.paginas}
+${imgs.length ? "As imagens anexadas são as prévias das páginas, em ordem." : "Não há prévia visual; avalie apenas o texto e diga isso no resumo."}
+Texto do design:
+"""${atual.texto.slice(0, 6000)}"""
+
+Avalie: hierarquia visual, layout e espaçamento, textos e mensagem (clareza, erros de digitação), consistência, legibilidade e contraste, acessibilidade e adequação ao canal.
+Regras: só aponte o que você realmente viu na prévia ou no texto; nada de conselho genérico. Cada problema vem com uma correção específica. No máximo 5 prioridades.
+Responda só com JSON neste formato:
+{"resumo":"uma frase","prioridades":[{"severidade":"Alta|Média|Baixa","pagina":1,"problema":"...","correcao":"..."}],"funciona":["..."]}`;
+      const fb = await sample.json(prompt, imgs.length ? { images: imgs } : {});
+      render(fb); status(st, "");
+    } catch (e) { status(st, erroSample(e), "err"); }
+    finally { btn.disabled = false; }
+
+    function render(fb) {
+      out.textContent = "";
+      if (fb && fb.resumo) { const p = document.createElement("p"); p.style.margin = "0"; p.textContent = String(fb.resumo); out.append(p); }
+      const pri = Array.isArray(fb && fb.prioridades) ? fb.prioridades : [];
+      if (pri.length) {
+        const ol = document.createElement("ol");
+        pri.forEach((it) => {
+          const li = document.createElement("li"); const sev = ["Alta", "Média", "Baixa"].includes(it.severidade) ? it.severidade : "Média";
+          const pill = document.createElement("span"); pill.className = "pill sev-" + sev; pill.textContent = sev;
+          const t = document.createElement("div"); t.textContent = (it.pagina ? "Página " + it.pagina + " · " : "") + String(it.problema || "");
+          t.prepend(pill, " ");
+          const fx = document.createElement("div"); fx.className = "fix"; fx.textContent = "Como corrigir: " + String(it.correcao || "");
+          li.append(t, fx); ol.append(li);
+        });
+        out.append(ol);
+      }
+      const ok = Array.isArray(fb && fb.funciona) ? fb.funciona : [];
+      if (ok.length) { const h = document.createElement("h3"); h.textContent = "O que está funcionando"; const ul = document.createElement("ul"); ok.forEach((s) => { const li = document.createElement("li"); li.textContent = String(s); ul.append(li); }); out.append(h, ul); }
+      const n = document.createElement("p"); n.className = "hint"; n.style.margin = "0"; n.textContent = "Para aplicar as correções, abra o design na Canva ou peça ao Claude no chat."; out.append(n);
+    }
+  };
+
+  // ---------- versões (canva-resize-for-social-media) ----------
+  const NOMES = { "1080x1920": "Stories e Reels", "1080x1350": "Feed retrato", "1080x1080": "Feed quadrado", "1200x627": "LinkedIn, X, Facebook link", "1000x1500": "Pinterest", "1920x1080": "YouTube" };
+  $("btn-resize").onclick = async () => {
+    const st = $("rs-status"), lista = $("rs-lista"), btn = $("btn-resize");
+    if (!atual) return;
+    const alvos = [...document.querySelectorAll("#canais input:checked")].map((c) => c.value);
+    if (!alvos.length) { status(st, "Marque pelo menos um formato.", "err"); return; }
+    btn.disabled = true; lista.textContent = ""; status(st, "Criando " + alvos.length + " versão(ões)…", "busy");
+    const origem = atual;
+    let ok = 0;
+    await Promise.all(alvos.map(async (alvo) => {
+      const [w, h] = alvo.split("x").map(Number);
+      const li = document.createElement("li"); const esq = document.createElement("div");
+      const t = document.createElement("div"); t.className = "t"; t.textContent = NOMES[alvo];
+      const d = document.createElement("div"); d.className = "d"; d.textContent = w + " × " + h + " · criando…";
+      esq.append(t, d); li.append(esq); lista.append(li);
+      try {
+        await need();
+        const r = await call("resize-design", { design_id: origem.id, design_type: { type: "custom", width: w, height: h }, user_intent: `[skill:canva-resize-for-social-media] Criar versão ${NOMES[alvo]} (${w}x${h})` });
+        const s = JSON.stringify(r.payload ?? r.content ?? "");
+        const m = s.match(/"(?:design_id|id)"\s*:\s*"(D[A-Za-z0-9_-]{10})"/);
+        let url = (s.match(/"edit_url"\s*:\s*"(https:[^"]+)"/) || [])[1];
+        if (!m) throw { code: "tool_error", message: "a Canva não devolveu o novo design." };
+        if (!url) {
+          const q = await call("read-design", { design_id: m[1], filter: { fields: ["design_metadata"] }, user_intent: "[skill:canva-resize-for-social-media] Pegar o link da versão criada" });
+          url = q.payload && q.payload.design_metadata && q.payload.design_metadata.urls && q.payload.design_metadata.urls.edit_url;
+        }
+        d.textContent = w + " × " + h + " · pronta";
+        if (url && /^https:\/\//.test(url)) { const a = document.createElement("a"); a.className = "btn"; a.href = url; a.target = "_blank"; a.rel = "noopener"; a.textContent = "Abrir"; li.append(a); }
+        const ab = document.createElement("button"); ab.className = "btn"; ab.textContent = "Ver aqui"; ab.onclick = () => abrir(m[1], { titulo: NOMES[alvo], edit: url }); li.append(ab);
+        ok++;
+      } catch (e) { d.textContent = w + " × " + h + " · " + erroMcp(e); d.style.color = "var(--bad)"; }
+    }));
+    status(st, ok === alvos.length ? "Versões criadas. Confira cada uma na Canva: textos e imagens podem precisar de um ajuste fino." : ok + " de " + alvos.length + " versões criadas.", ok ? "ok" : "err");
+    btn.disabled = false;
+  };
+
+  // ---------- meus designs ----------
+  let cont = null;
+  async function buscar(mais) {
+    const st = $("meus-status"), lista = $("meus-lista");
+    try {
+      await need(); status(st, "Buscando…", "busy");
+      const q = $("busca").value.trim();
+      const input = { limit: 15, sort_by: q ? "relevance" : "modified_descending", user_intent: "[skill:canva-design-feedback] Listar designs para abrir no ateliê" };
+      if (q) input.query = q;
+      if (mais && cont) input.continuation = cont;
+      const r = await call("search-designs", input);
+      const p = r.payload || {}; cont = p.continuation || null;
+      if (!mais) lista.textContent = "";
+      (p.items || []).forEach((it) => {
+        const li = document.createElement("li"); const esq = document.createElement("div"); esq.style.minWidth = "0";
+        const t = document.createElement("div"); t.className = "t"; t.textContent = it.title || "Design sem título";
+        const d = document.createElement("div"); d.className = "d";
+        d.textContent = (it.page_count || 1) + (it.page_count === 1 ? " página" : " páginas") + (it.updated_at ? " · " + new Date(it.updated_at * 1000).toLocaleDateString("pt-BR") : "");
+        esq.append(t, d);
+        const b = document.createElement("button"); b.className = "btn"; b.textContent = "Abrir";
+        b.onclick = () => abrir(it.id, { titulo: it.title, edit: it.urls && it.urls.edit_url });
+        li.append(esq, b); lista.append(li);
+      });
+      $("btn-mais").hidden = !cont;
+      status(st, lista.children.length ? "" : "Nenhum design encontrado.");
+    } catch (e) { status(st, erroMcp(e), "err"); }
+  }
+  $("form-busca").addEventListener("submit", (e) => { e.preventDefault(); cont = null; buscar(false); });
+  $("btn-mais").onclick = () => buscar(true);
+})();
+</script>
